@@ -11,8 +11,8 @@ app.use(express.json());
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(() => console.log("✅ Conectado a MongoDB"))
-  .catch((err) => console.error("❌ Error al conectar a MongoDB:", err));
+}).then(() => console.log(" Conectado a MongoDB"))
+  .catch((err) => console.error(" Error al conectar a MongoDB:", err));
 
 // Ruta de prueba
 app.get("/", (req, res) => {
@@ -21,5 +21,5 @@ app.get("/", (req, res) => {
 
 // Iniciar servidor
 app.listen(process.env.PORT, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${process.env.PORT}`);
+    console.log(` Servidor corriendo en http://localhost:${process.env.PORT}`);
 });
