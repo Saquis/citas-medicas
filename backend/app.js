@@ -14,6 +14,10 @@ mongoose.connect(process.env.MONGODB_URI, {
 }).then(() => console.log(" Conectado a MongoDB"))
   .catch((err) => console.error(" Error al conectar a MongoDB:", err));
 
+// Importar Rutas
+const rutasusuarios = require("./rutas/UsuariosR");
+app.use("/api", rutasusuarios); // Rutas para usuarios
+
 // Ruta de prueba
 app.get("/", (req, res) => {
     res.send("API de citas médicas funcionando");

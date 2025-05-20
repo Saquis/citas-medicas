@@ -1,0 +1,1 @@
+No te olvides de poner footer y nabvar para que sea más fácil de navegar.
