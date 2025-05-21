@@ -1,15 +1,19 @@
-<div style="max-width: 400px; margin: auto; padding: 2rem;">
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="fill" class="w-full">
+<div class="login-container">
+  <h2 class="titulo">Iniciar Sesión</h2>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <mat-form-field appearance="outline" class="form-field">
       <mat-label>Usuario</mat-label>
-      <input matInput formControlName="usuario" required>
+      <input matInput formControlName="usuario" placeholder="Ingresa tu usuario" required>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" class="w-full">
+    <mat-form-field appearance="outline" class="form-field">
       <mat-label>Contraseña</mat-label>
-      <input matInput type="password" formControlName="contrasena" required>
+      <input matInput type="password" formControlName="contrasena" placeholder="Ingresa tu contraseña" required>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid">Iniciar sesión</button>
+    <button mat-raised-button color="primary" class="login-button" type="submit" [disabled]="!loginForm.valid">
+      <mat-icon class="login-icon">login</mat-icon> Entrar
+    </button>
   </form>
 </div>

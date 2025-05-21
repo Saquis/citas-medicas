@@ -5,6 +5,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
+import { AutenticacionService } from '../../nucleo/servicios/autenticacion.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-inicio-sesion',
@@ -14,7 +16,8 @@ import { Router } from '@angular/router';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule
   ],
   templateUrl: './inicio-sesion.component.html',
   styleUrls: ['./inicio-sesion.component.css']
@@ -22,7 +25,11 @@ import { Router } from '@angular/router';
 export class InicioSesionComponent {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private authService: AutenticacionService 
+  ) {
     this.loginForm = this.fb.group({
       usuario: ['', Validators.required],
       contrasena: ['', Validators.required]
@@ -30,36 +37,40 @@ export class InicioSesionComponent {
   }
 
   onSubmit(): void {
-    if (this.loginForm.valid) {
-      const datos = this.loginForm.value;
-      console.log('Datos enviados:', datos);
+  if (this.loginForm.valid) {
+    const { usuario, contrasena } = this.loginForm.value;
 
-      // Se puede hacer llamadas al Backend 
+    this.authService.login(usuario, contrasena).subscribe({
+      next: (respuesta) => {
+        console.log('Respuesta del backend:', respuesta);
 
-      const usuario = datos.usuario.toLowerCase();
+        // Aquí puedes guardar el token en localStorage si deseas
+        localStorage.setItem('token', respuesta.token);
 
-      // Simula la navegacion por rol
-
-      switch (usuario) {
-        case 'admin':
-          this.router.navigate(['/administrador']);
-          break;
-        case 'medico':
-          this.router.navigate(['medico']);
-          break;
-        case 'paciente':
-          this.router.navigate(['/paciente']);
-          break;
-        case 'secretaria':
-          this.router.navigate(['/secretaria']);
-          break;
-        default:
-          console.warn('Rol no conocido'); // o redireccionar a una pagina de error
-          break;
-
-
-
+        // Redireccionar según el rol
+        switch (respuesta.rol) {
+          case 'administrador':
+            this.router.navigate(['/administrador']);
+            break;
+          case 'medico':
+            this.router.navigate(['/medico']);
+            break;
+          case 'paciente':
+            this.router.navigate(['/paciente']);
+            break;
+          case 'secretaria':
+            this.router.navigate(['/secretaria']);
+            break;
+          default:
+            console.warn('Rol no reconocido');
+            break;
+        }
+      },
+      error: (error) => {
+        console.error('Error al iniciar sesión:', error);
+        alert('Credenciales inválidas o error de servidor.');
       }
-    }
+    });
   }
+}
 }

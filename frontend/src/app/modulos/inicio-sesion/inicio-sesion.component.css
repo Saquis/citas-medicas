@@ -1,4 +1,40 @@
-.w-full {
+.login-container {
+  max-width: 400px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background-color: #f7f9fc;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.titulo {
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-field {
   width: 100%;
-  margin-bottom: 1rem;
+}
+
+.login-button {
+  padding: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.login-icon {
+  font-size: 1.2rem;
 }
