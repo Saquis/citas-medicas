@@ -37,40 +37,76 @@ export class InicioSesionComponent {
   }
 
   onSubmit(): void {
-  if (this.loginForm.valid) {
-    const { usuario, contrasena } = this.loginForm.value;
+    if (this.loginForm.valid) {
+      const { usuario, contrasena } = this.loginForm.value;
 
-    this.authService.login(usuario, contrasena).subscribe({
-      next: (respuesta) => {
-        console.log('Respuesta del backend:', respuesta);
+      this.authService.login(usuario, contrasena).subscribe({
+        next: (respuesta) => {
+          console.log('Respuesta completa:', respuesta);
 
-        // Aquí puedes guardar el token en localStorage si deseas
-        localStorage.setItem('token', respuesta.token);
+          // 🔥 GUARDAR DATOS DEL USUARIO EN LOCALSTORAGE
+          localStorage.setItem('user', JSON.stringify(respuesta.datosUsuario));
+          localStorage.setItem('token', respuesta.token);
+          
+          
 
-        // Redireccionar según el rol
-        switch (respuesta.rol) {
-          case 'administrador':
-            this.router.navigate(['/administrador']);
-            break;
-          case 'medico':
-            this.router.navigate(['/medico']);
-            break;
-          case 'paciente':
-            this.router.navigate(['/paciente']);
-            break;
-          case 'secretaria':
-            this.router.navigate(['/secretaria']);
-            break;
-          default:
-            console.warn('Rol no reconocido');
-            break;
+          // Redirección según el rol
+          const rol = respuesta.datosUsuario?.rol?.toLowerCase();
+          console.log('Rol Normalizado:', rol);
+          
+          switch (rol) {
+            case 'administrador':
+              console.log('Navegando al administrador');
+              this.router.navigate(['/administrador']).then(
+                success => console.log('✅ Navegación exitosa:', success),
+                error => console.log('❌ Error en navegación:', error)
+              );
+              break;
+            case 'medico':
+              console.log('Navegando al médico');
+              this.router.navigate(['/medico']).then(
+                success => console.log('✅ Navegación exitosa:', success),
+                error => console.log('❌ Error en navegación:', error)
+              );
+              break;
+            case 'paciente':
+              console.log('Navegando al paciente');
+              this.router.navigate(['/paciente']).then(
+                success => console.log('✅ Navegación exitosa:', success),
+                error => console.log('❌ Error en navegación:', error)
+              );
+              break;
+            case 'secretaria':
+              console.log('Navegando a secretaria');
+              this.router.navigate(['/secretaria']).then(
+                success => console.log('✅ Navegación exitosa:', success),
+                error => console.log('❌ Error en navegación:', error)
+              );
+              break;
+            default:
+              console.warn('Rol no reconocido:', rol);
+              alert('Rol de usuario no válido');
+              break;
+          }
+        },
+        error: (error) => {
+          console.error('Error al iniciar sesión:', error);
+          alert('Credenciales inválidas o error de servidor.');
         }
-      },
-      error: (error) => {
-        console.error('Error al iniciar sesión:', error);
-        alert('Credenciales inválidas o error de servidor.');
-      }
-    });
+      });
+    } else {
+      console.log('Formulario no válido');
+      // Marcar todos los campos como tocados para mostrar errores
+      this.loginForm.markAllAsTouched();
+    }
   }
-}
+
+  // Método auxiliar para mostrar errores de validación
+  getErrorMessage(field: string): string {
+    const control = this.loginForm.get(field);
+    if (control?.hasError('required')) {
+      return `${field} es requerido`;
+    }
+    return '';
+  }
 }
