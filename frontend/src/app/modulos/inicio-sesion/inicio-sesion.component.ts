@@ -79,8 +79,8 @@ export class InicioSesionComponent {
             case 'secretaria':
               console.log('Navegando a secretaria');
               this.router.navigate(['/secretaria']).then(
-                success => console.log('✅ Navegación exitosa:', success),
-                error => console.log('❌ Error en navegación:', error)
+                success => console.log(' Navegación exitosa:', success),
+                error => console.log(' Error en navegación:', error)
               );
               break;
             default:

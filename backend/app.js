@@ -16,7 +16,9 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Importar Rutas
 const rutasusuarios = require("./rutas/UsuariosR");
+const rutasCitas = require("./rutas/CitasR"); // Añadir esta línea
 app.use("/api", rutasusuarios); // Rutas para usuarios
+app.use("/api", rutasCitas); // Añadir esta línea
 
 // Ruta de prueba
 app.get("/", (req, res) => {

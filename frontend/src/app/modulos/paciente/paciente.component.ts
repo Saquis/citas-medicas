@@ -1,11 +1,37 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../nucleo/autenticacion/auth.service'; // Ajusta la ruta según tu estructura
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-paciente',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './paciente.component.html',
-  styleUrl: './paciente.component.css'
+  styleUrls: ['./paciente.component.css']
 })
-export class PacienteComponent {
+export class PacienteComponent implements OnInit {
+  citas: any[] = [];
 
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.loadCitas();
+  }
+
+  loadCitas(): void {
+    this.authService.getCitasPorPaciente().subscribe({
+      next: (citas) => {
+        this.citas = citas;
+      },
+      error: (error) => {
+        console.error('Error al cargar citas del paciente:', error);
+      }
+    });
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/']);
+  }
 }

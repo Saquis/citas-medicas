@@ -1,1 +1,34 @@
-<p>paciente works!</p>
+<div class="dashboard-container">
+  <nav class="sidebar">
+    <h2>Panel de Paciente</h2>
+    <ul>
+      <li><button (click)="loadCitas()">Actualizar Citas</button></li>
+      <li><button class="logout-btn" (click)="logout()">Cerrar Sesión</button></li>
+    </ul>
+  </nav>
+
+  <div class="content">
+    <h3>Mis Citas</h3>
+    <table *ngIf="citas.length > 0; else noCitas">
+      <thead>
+        <tr>
+          <th>Fecha y Hora</th>
+          <th>Médico</th>
+          <th>Estado</th>
+          <th>Especialidad</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cita of citas">
+          <td>{{ cita.fecha_hora | date:'medium' }}</td>
+          <td>{{ cita.medico_nombre }}</td>
+          <td>{{ cita.estado }}</td>
+          <td>{{ cita.especialidad || 'N/A' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #noCitas>
+      <p>No hay citas registradas.</p>
+    </ng-template>
+  </div>
+</div>

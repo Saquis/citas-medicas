@@ -245,8 +245,55 @@ const eliminarUsuario = async (req, res) => {
     manejarError(res, error);
   }
 };
+// Logica de citas  
+const Cita = require('../modelos/CitaM');
 
-// ✅ EXPORTACIÓN CORREGIDA - FALTABA PUNTO Y COMA AL FINAL
+exports.getCitas = async (req, res) => {
+  try {
+    const citas = await Cita.aggregate([
+      {
+        $lookup: {
+          from: 'usuarios',
+          localField: 'paciente_id',
+          foreignField: '_id',
+          as: 'paciente'
+        }
+      },
+      { $unwind: '$paciente' },
+      {
+        $lookup: {
+          from: 'usuarios',
+          localField: 'medico_id',
+          foreignField: '_id',
+          as: 'medico'
+        }
+      },
+      { $unwind: '$medico' },
+      {
+        $project: {
+          fecha_hora: 1,
+          paciente_nombre: '$paciente.nombre',
+          medico_id: '$_id', // Incluir medico_id como referencia
+          medico_nombre: '$medico.nombre',
+          estado: 1,
+          especialidad: 1,
+          duracion: 1,
+          tipo_cita: 1,
+          notas: 1,
+          sintomas: 1,
+          creado_en: 1,
+          actualizado_en: 1,
+          recordatorio_enviado: 1
+        }
+      }
+    ]);
+    res.status(200).json(citas);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener citas', error });
+  }
+};
+
+
 module.exports = {
   crearUsuario,
   obtenerUsuarios,

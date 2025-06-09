@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 // Validación de JWT_SECRET
 if (!process.env.JWT_SECRET) {
-  throw new Error(' Fatal: JWT_SECRET no está definido en .env');
+  throw new Error('Fatal: JWT_SECRET no está definido en .env');
 }
 const JWT_SECRET = process.env.JWT_SECRET;
 

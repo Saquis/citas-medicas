@@ -1,1 +1,40 @@
-<p>administrador works!</p>
+<div class="dashboard-container"> <!-- Cambiado de "dashboard" a "dashboard-container" -->
+  <!-- Barra lateral -->
+  <nav class="sidebar"> <!-- Añadida clase "sidebar" -->
+    <h2>Panel de Administrador</h2>
+    <ul>
+      <li><button (click)="seccion = 'usuarios'">Usuarios</button></li>
+      <li><button (click)="seccion = 'estadisticas'">Estadísticas</button></li>
+      <li><button class="logout-btn" (click)="logout()">Cerrar sesión</button></li>
+    </ul>
+  </nav>
+
+  <!-- Contenido dinámico -->
+  <div class="content"> <!-- Cambiado de "contenido" a "content" -->
+    @if (seccion === 'usuarios') {
+      <!-- Tabla de usuarios -->
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Rol</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let usuario of usuarios">
+            <td>{{ usuario.nombre }}</td>
+            <td>{{ usuario.rol }}</td>
+          </tr>
+        </tbody>
+      </table>
+    }
+    @else if (seccion === 'estadisticas') {
+        
+      <!-- Gráficos -->
+      <div class="grafico-container">
+        <h3>Estadísticas del Sistema</h3>
+        <div class="grafico">Gráfico de barras...</div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,37 +1,84 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  // URL del backend local (Node.js/Express)
-  private apiUrl = 'http://localhost:3000/api/auth'; // Ajusta el puerto si es diferente
+  private apiUrl = 'http://localhost:3000/api'; // Endpoint de autenticación
+  private apiCitasUrl = 'http://localhost:3000/api/citas'; // Endpoint de citas
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   login(usuario: string, contrasena: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, { usuario, contrasena }).pipe(
       tap((response: any) => {
-  localStorage.setItem('token', response.token);
-  localStorage.setItem('rol', response.datosUsuario.rol); // ✔️ Correcto
-})
+        console.log('Respuesta del login:', response); // Depuración
+        if (response.token && response.datosUsuario && isPlatformBrowser(this.platformId)) {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('rol', response.datosUsuario.rol);
+          localStorage.setItem('userId', response.datosUsuario.id);
+          console.log('Guardado en localStorage:', {
+            token: response.token,
+            rol: response.datosUsuario.rol,
+            userId: response.datosUsuario.id
+          });
+        } else {
+          console.warn('Respuesta incompleta o no en navegador:', response);
+        }
+      })
     );
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem('token');
+    }
+    return null; // Retorna null en el servidor
   }
 
   getRol(): string | null {
-    return localStorage.getItem('rol');
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem('rol');
+    }
+    return null; // Retorna null en el servidor
+  }
+
+  getUserId(): string | null {
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem('userId'); // Corrección: usa userId directamente
+    }
+    return null; // Retorna null en el servidor
   }
 
   logout(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('rol');
-    this.router.navigate(['/login']);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('rol');
+      localStorage.removeItem('userId');
+    }
+    this.router.navigate(['/login']); // Ajuste a /login si es tu ruta de inicio
+  }
+
+  getCitas(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiCitasUrl, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${this.getToken() || ''}` })
+    });
+  }
+
+  getUsuarios(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/usuarios`, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${this.getToken() || ''}` })
+    });
+  }
+
+  getCitasPorPaciente(): Observable<any[]> {
+    const userId = this.getUserId();
+    return this.http.get<any[]>(`${this.apiUrl}/pacientes/${userId}/citas`, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${this.getToken() || ''}` })
+    });
   }
 }
