@@ -9,7 +9,7 @@
   </nav>
 
   <div class="content">
-    @if (seccion === 'citas') {
+    <section *ngIf="seccion === 'citas'; else atencionBlock">
       <table>
         <thead>
           <tr>
@@ -28,9 +28,10 @@
           </tr>
         </tbody>
       </table>
-    }
-    @else if (seccion === 'atencion') {
-      <div class="atencion-form">
+    </section>
+
+    <ng-template #atencionBlock>
+      <section *ngIf="seccion === 'atencion'" class="atencion-form">
         <h3>Registrar Atención</h3>
         <form (ngSubmit)="registrarAtencion()">
           <label for="citaId">ID de Cita:</label>
@@ -44,7 +45,7 @@
           </select>
           <button type="submit">Registrar</button>
         </form>
-      </div>
-    }
+      </section>
+    </ng-template>
   </div>
 </div>

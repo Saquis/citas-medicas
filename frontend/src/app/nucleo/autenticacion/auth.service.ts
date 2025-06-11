@@ -14,24 +14,26 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
 
   login(usuario: string, contrasena: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, { usuario, contrasena }).pipe(
-      tap((response: any) => {
-        console.log('Respuesta del login:', response); // Depuración
-        if (response.token && response.datosUsuario && isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('rol', response.datosUsuario.rol);
-          localStorage.setItem('userId', response.datosUsuario.id);
-          console.log('Guardado en localStorage:', {
-            token: response.token,
-            rol: response.datosUsuario.rol,
-            userId: response.datosUsuario.id
-          });
-        } else {
-          console.warn('Respuesta incompleta o no en navegador:', response);
-        }
-      })
-    );
-  }
+  return this.http.post(`${this.apiUrl}/login`, { usuario, contrasena }).pipe(
+    tap((response: any) => {
+      console.log('Entrando en login'); // Nuevo log para verificar ejecución
+      console.log('Respuesta del login:', response); // Depuración
+      console.log('Datos del usuario en login:', response.datosUsuario); // Log para depurar
+      if (response.token && response.datosUsuario && isPlatformBrowser(this.platformId)) {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('rol', response.datosUsuario.rol);
+        localStorage.setItem('userId', response.datosUsuario.id);
+        console.log('Guardado en localStorage:', {
+          token: response.token,
+          rol: response.datosUsuario.rol,
+          userId: response.datosUsuario.id
+        });
+      } else {
+        console.warn('Respuesta incompleta o no en navegador:', response);
+      }
+    })
+  );
+}
 
   getToken(): string | null {
     if (isPlatformBrowser(this.platformId)) {
@@ -77,6 +79,8 @@ export class AuthService {
 
   getCitasPorPaciente(): Observable<any[]> {
     const userId = this.getUserId();
+    console.log('Token enviado:', this.getToken()); // Log para depuración
+    console.log('User ID:', userId); // Log para depuración
     return this.http.get<any[]>(`${this.apiUrl}/pacientes/${userId}/citas`, {
       headers: new HttpHeaders({ Authorization: `Bearer ${this.getToken() || ''}` })
     });

@@ -16,6 +16,7 @@ const ROLES = {
 // ✅ MIDDLEWARE FALTANTE: verificarToken
 function verificarToken(req, res, next) {
   const authHeader = req.headers.authorization;
+  console.log('Header Authorization recibido:', authHeader); // Log para depuración
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
   
   if (!token) {

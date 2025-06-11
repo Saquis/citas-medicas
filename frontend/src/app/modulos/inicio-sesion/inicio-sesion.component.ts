@@ -47,8 +47,7 @@ export class InicioSesionComponent {
           // 🔥 GUARDAR DATOS DEL USUARIO EN LOCALSTORAGE
           localStorage.setItem('user', JSON.stringify(respuesta.datosUsuario));
           localStorage.setItem('token', respuesta.token);
-          
-          
+          localStorage.setItem('userId', respuesta.datosUsuario.id);  // <-- Aquí agregamos el guardado de userId
 
           // Redirección según el rol
           const rol = respuesta.datosUsuario?.rol?.toLowerCase();
