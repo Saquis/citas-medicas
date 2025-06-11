@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../nucleo/autenticacion/auth.service'; // Ajuste de servicio
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http'; // Para peticiones HTTP
+import { HttpClientModule } from '@angular/common/http';
+import { FooterComponent } from "../footer/footer.component"; // Para peticiones HTTP
 
 @Component({
   standalone: true,
-  imports: [CommonModule, HttpClientModule], // Añadido HttpClientModule
+  imports: [CommonModule, HttpClientModule, FooterComponent], // Añadido HttpClientModule
   templateUrl: './administrador.component.html',
   styleUrls: ['./administrador.component.css']
 })

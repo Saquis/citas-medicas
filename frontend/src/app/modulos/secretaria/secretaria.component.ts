@@ -3,11 +3,12 @@ import { AutenticacionService } from '../../nucleo/servicios/autenticacion.servi
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { FooterComponent } from "../footer/footer.component";
 
 @Component({
   selector: 'app-secretaria',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule, HttpClientModule, FooterComponent],
   templateUrl: './secretaria.component.html',
   styleUrls: ['./secretaria.component.css']
 })

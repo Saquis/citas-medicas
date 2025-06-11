@@ -4,9 +4,11 @@ import { AdministradorComponent } from './modulos/administrador/administrador.co
 import { MedicoComponent } from './modulos/medico/medico.component';
 import { PacienteComponent } from './modulos/paciente/paciente.component';
 import { SecretariaComponent } from './modulos/secretaria/secretaria.component';
+import { FooterComponent } from './modulos/footer/footer.component';
 import { AuthGuard } from './nucleo/guardias/auth.guard';
 
 export const routes: Routes = [
+  {path: 'footer', component: FooterComponent},
   { path: '', component: InicioSesionComponent },
   { 
     path: 'administrador', 

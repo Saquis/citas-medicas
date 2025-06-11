@@ -1,12 +1,12 @@
 <div class="app-container">
   <nav class="sidebar" *ngIf="isAuthenticated()">
-    <h2>Sistema Médico</h2>
+    <h2><span>Sistema Médico</span></h2>
     <ul>
       <li *ngIf="getRol() === 'administrador'"><a routerLink="/administrador">Panel Admin</a></li>
       <li *ngIf="getRol() === 'medico'"><a routerLink="/medico">Panel Médico</a></li>
       <li *ngIf="getRol() === 'secretaria'"><a routerLink="/secretaria">Panel Secretaria</a></li>
       <li *ngIf="getRol() === 'paciente'"><a routerLink="/paciente">Panel Paciente</a></li>
-      <li><a (click)="logout()" style="cursor: pointer;">Cerrar Sesión</a></li>
+      <li><a (click)="logout()" class="logout-btn" role="button" tabindex="0" style="cursor: pointer;">Cerrar Sesión</a></li>
     </ul>
   </nav>
 
