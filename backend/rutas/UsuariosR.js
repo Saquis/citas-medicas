@@ -20,15 +20,15 @@ const {
   ROLES
 } = require('../configuraciones/autorizacion');
 
-// Ruta pública
-router.post('/login', login);
+// Ruta pública para login, aquí deberías evaluar si dejarla en este archivo o moverla a otro router (opcional)
+//router.post('/login', login);
 
-// Rutas protegidas
-router.get('/usuarios', verificarToken, verificarRol([ROLES.ADMINISTRADOR]), obtenerUsuarios);
-router.get('/usuarios/:id', verificarToken, verificarPropietarioOAdmin, obtenerUsuarioPorId);
-router.post('/usuarios', verificarToken, verificarRol([ROLES.ADMINISTRADOR]), crearUsuario);
-router.put('/usuarios/:id', verificarToken, verificarPropietarioOAdmin, editarUsuario);
-router.patch('/usuarios/:id/cambiar-password', verificarToken, verificarPropietarioOAdmin, cambiarPassword);
-router.delete('/usuarios/:id', verificarToken, verificarRol([ROLES.ADMINISTRADOR]), eliminarUsuario);
+// Rutas protegidas, sin repetir 'usuarios' en la ruta
+router.get('/', verificarToken, verificarRol([ROLES.ADMINISTRADOR]), obtenerUsuarios);
+router.get('/:id', verificarToken, verificarPropietarioOAdmin, obtenerUsuarioPorId);
+router.post('/', verificarToken, verificarRol([ROLES.ADMINISTRADOR]), crearUsuario);
+router.put('/:id', verificarToken, verificarPropietarioOAdmin, editarUsuario);
+router.patch('/:id/cambiar-password', verificarToken, verificarPropietarioOAdmin, cambiarPassword);
+router.delete('/:id', verificarToken, verificarRol([ROLES.ADMINISTRADOR]), eliminarUsuario);
 
 module.exports = router;

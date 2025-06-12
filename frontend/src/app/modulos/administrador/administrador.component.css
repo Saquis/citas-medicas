@@ -95,3 +95,47 @@ table td {
   color: #2c3e50;
 }
   */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f8;
+  color: #333;
+}
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+}
+
+.form-container, .edit-form {
+  margin: 20px 0;
+  padding: 15px;
+}
+
+.grafico-container {
+  margin-top: 20px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.grafico {
+  height: 200px;
+  background-color: #ecf0f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2c3e50;
+}
+  
+/* Ajustes específicos */
+.card-header {
+  background-color: #2c3e50;
+  color: white;
+}

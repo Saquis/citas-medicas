@@ -13,7 +13,7 @@ const ROLES = {
   PACIENTE: 'paciente'
 };
 
-// ✅ MIDDLEWARE FALTANTE: verificarToken
+//  MIDDLEWARE FALTANTE: verificarToken
 function verificarToken(req, res, next) {
   const authHeader = req.headers.authorization;
   console.log('Header Authorization recibido:', authHeader); // Log para depuración
@@ -50,7 +50,7 @@ function verificarRol(rolesPermitidos = []) {
   };
 }
 
-// ✅ MIDDLEWARE FALTANTE: verificarPropietarioOAdmin
+//  MIDDLEWARE FALTANTE: verificarPropietarioOAdmin
 function verificarPropietarioOAdmin(req, res, next) {
   const userId = req.params.id;
   if (req.usuario?.rol === ROLES.ADMINISTRADOR || req.usuario?.id === userId) {

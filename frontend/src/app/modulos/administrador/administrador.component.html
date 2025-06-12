@@ -1,41 +1,105 @@
-<div class="dashboard-container"> <!-- Cambiado de "dashboard" a "dashboard-container" -->
+<div class="dashboard-container">
   <!-- Barra lateral -->
-  <nav class="sidebar"> <!-- Añadida clase "sidebar" -->
+  <nav class="sidebar">
     <h2>Panel de Administrador</h2>
     <ul>
-      <li><button (click)="seccion = 'usuarios'">Usuarios</button></li>
-      <li><button (click)="seccion = 'estadisticas'">Estadísticas</button></li>
+      <li><button class="btn btn-primary" (click)="seccion = 'usuarios'">Usuarios</button></li>
+      <li><button class="btn btn-primary" (click)="seccion = 'estadisticas'">Estadísticas</button></li>
     </ul>
   </nav>
 
   <!-- Contenido dinámico -->
-  <div class="content"> <!-- Cambiado de "contenido" a "content" -->
+  <div class="content">
     @if (seccion === 'usuarios') {
+      <!-- Formulario para crear usuario -->
+      <div class="form-container">
+        <h3>Crear Nuevo Usuario</h3>
+        <form (ngSubmit)="crearUsuario()" #userForm="ngForm" class="row g-3">
+          <div class="col-md-2">
+            <input [(ngModel)]="nuevoUsuario.nombre" name="nombre" class="form-control" placeholder="Nombre" required>
+          </div>
+          <div class="col-md-2">
+            <input [(ngModel)]="nuevoUsuario.usuario" name="usuario" class="form-control" placeholder="Usuario" required>
+          </div>
+          <div class="col-md-2">
+            <input [(ngModel)]="nuevoUsuario.correo" name="correo" class="form-control" placeholder="Correo" type="email" required>
+          </div>
+          <div class="col-md-2">
+            <input [(ngModel)]="nuevoUsuario.password" name="password" class="form-control" placeholder="Contraseña" type="password" required>
+          </div>
+          <div class="col-md-2">
+            <select [(ngModel)]="nuevoUsuario.rol" name="rol" class="form-select" required>
+              <option value="paciente">Paciente</option>
+              <option value="medico">Médico</option>
+              <option value="secretaria">Secretaria</option>
+              <option value="administrador">Administrador</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">Crear</button>
+          </div>
+        </form>
+      </div>
+
       <!-- Tabla de usuarios -->
-      <table>
+      <table class="table table-striped">
         <thead>
           <tr>
             <th>Nombre</th>
             <th>Rol</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let usuario of usuarios">
             <td>{{ usuario.nombre }}</td>
             <td>{{ usuario.rol }}</td>
+            <td>
+              <button class="btn btn-warning btn-sm me-2" (click)="seleccionarUsuario(usuario)">Editar</button>
+              <button class="btn btn-danger btn-sm" (click)="eliminarUsuario(usuario._id)">Eliminar</button>
+            </td>
           </tr>
         </tbody>
       </table>
+
+      <!-- Formulario para editar usuario (visible al seleccionar) -->
+      @if (usuarioSeleccionado) {
+        <div class="edit-form">
+          <h3>Editar Usuario</h3>
+          <form (ngSubmit)="actualizarUsuario()" #editForm="ngForm" class="row g-3">
+            <div class="col-md-2">
+              <input [(ngModel)]="usuarioSeleccionado.nombre" name="nombre" class="form-control" placeholder="Nombre" required>
+            </div>
+            <div class="col-md-2">
+              <input [(ngModel)]="usuarioSeleccionado.usuario" name="usuario" class="form-control" placeholder="Usuario" required>
+            </div>
+            <div class="col-md-2">
+              <input [(ngModel)]="usuarioSeleccionado.correo" name="correo" class="form-control" placeholder="Correo" type="email" required>
+            </div>
+            <div class="col-md-2">
+              <select [(ngModel)]="usuarioSeleccionado.rol" name="rol" class="form-select" required>
+                <option value="paciente">Paciente</option>
+                <option value="medico">Médico</option>
+                <option value="secretaria">Secretaria</option>
+                <option value="administrador">Administrador</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <button type="submit" class="btn btn-success" [disabled]="editForm.invalid">Guardar</button>
+            </div>
+            <div class="col-md-2">
+              <button type="button" class="btn btn-secondary" (click)="usuarioSeleccionado = null">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      }
     }
     @else if (seccion === 'estadisticas') {
-        
-      <!-- Gráficos -->
+      <!-- Gráficos (placeholder por ahora) -->
       <div class="grafico-container">
         <h3>Estadísticas del Sistema</h3>
-        <div class="grafico">Gráfico de barras...</div>
+        <div class="grafico">Gráfico de barras (pendiente de implementación)</div>
       </div>
     }
   </div>
 </div>
-<br>
-<app-footer></app-footer>

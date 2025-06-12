@@ -2,6 +2,11 @@ const bcrypt = require('bcrypt');
 const { getDB } = require('../configuraciones/conexion');
 const { ObjectId } = require('mongodb');
 
+/**
+ Desarrallo: Germán Del Rio
+ 
+ */
+
 // ------------------------- FUNCIONES AUXILIARES ------------------------- //
 /**
  * Verifica si el usuario es administrador.
@@ -16,8 +21,8 @@ const esAdministrador = (usuario) => usuario?.rol === 'administrador';
  * @param {Error} error - Error capturado.
  */
 const manejarError = (res, error) => {
-  console.error('Error:', error);
-  res.status(500).json({ mensaje: 'Error del servidor' });
+  console.error(' Error:', error);
+  res.status(500).json({ mensaje: 'Error del servidor', detalle: error.message });
 };
 
 // ------------------------- CONTROLADORES ------------------------- //
@@ -31,17 +36,14 @@ const crearUsuario = async (req, res) => {
     const usuarios = db.collection('usuarios');
     const { nombre, usuario, correo, password, rol } = req.body;
 
-    // Verificación de campos requeridos
     if (!nombre || !usuario || !correo || !password || !rol) {
       return res.status(400).json({ mensaje: 'Faltan campos requeridos' });
     }
 
-    // Verificar permisos de administrador
     if (!esAdministrador(req.usuario)) {
       return res.status(403).json({ mensaje: 'No tienes permiso para crear usuarios' });
     }
 
-    // Normalizar y verificar duplicados
     const usuarioNormalizado = usuario.toLowerCase();
     const correoNormalizado = correo.toLowerCase();
     const existente = await usuarios.findOne({
@@ -52,7 +54,6 @@ const crearUsuario = async (req, res) => {
       return res.status(409).json({ mensaje: 'Usuario o correo ya existe' });
     }
 
-    // Crear usuario
     const nuevoUsuario = {
       nombre,
       usuario: usuarioNormalizado,
@@ -68,7 +69,6 @@ const crearUsuario = async (req, res) => {
       mensaje: 'Usuario creado exitosamente',
       id: resultado.insertedId
     });
-
   } catch (error) {
     manejarError(res, error);
   }
@@ -87,7 +87,7 @@ const obtenerUsuarios = async (req, res) => {
     }
 
     const lista = await usuarios
-      .find({}, { projection: { password_hash: 0, token_acceso: 0, reseteo_password: 0 } })
+      .find({}, { projection: { password_hash: 0 } }) // Solo excluimos password_hash
       .toArray();
 
     res.status(200).json(lista);
@@ -111,7 +111,7 @@ const obtenerUsuarioPorId = async (req, res) => {
 
     const usuario = await usuarios.findOne(
       { _id: new ObjectId(id) },
-      { projection: { password_hash: 0, token_acceso: 0, reseteo_password: 0 } }
+      { projection: { password_hash: 0 } }
     );
 
     if (!usuario) {
@@ -137,17 +137,13 @@ const editarUsuario = async (req, res) => {
       return res.status(403).json({ mensaje: 'No tienes permiso para editar este usuario' });
     }
 
-    // Filtrar campos editables según rol
     let camposActualizables = req.body;
     if (!esAdministrador(req.usuario)) {
       camposActualizables = { nombre: req.body.nombre };
     }
 
-    // Eliminar campos protegidos
     delete camposActualizables.password_hash;
-    delete camposActualizables.token_acceso;
 
-    // Validar duplicados al actualizar correo/usuario
     if (camposActualizables.correo) {
       camposActualizables.correo = camposActualizables.correo.toLowerCase();
       const correoExistente = await usuarios.findOne({
@@ -245,55 +241,8 @@ const eliminarUsuario = async (req, res) => {
     manejarError(res, error);
   }
 };
-// Logica de citas  
-const Cita = require('../modelos/CitaM');
 
-exports.getCitas = async (req, res) => {
-  try {
-    const citas = await Cita.aggregate([
-      {
-        $lookup: {
-          from: 'usuarios',
-          localField: 'paciente_id',
-          foreignField: '_id',
-          as: 'paciente'
-        }
-      },
-      { $unwind: '$paciente' },
-      {
-        $lookup: {
-          from: 'usuarios',
-          localField: 'medico_id',
-          foreignField: '_id',
-          as: 'medico'
-        }
-      },
-      { $unwind: '$medico' },
-      {
-        $project: {
-          fecha_hora: 1,
-          paciente_nombre: '$paciente.nombre',
-          medico_id: '$_id', // Incluir medico_id como referencia
-          medico_nombre: '$medico.nombre',
-          estado: 1,
-          especialidad: 1,
-          duracion: 1,
-          tipo_cita: 1,
-          notas: 1,
-          sintomas: 1,
-          creado_en: 1,
-          actualizado_en: 1,
-          recordatorio_enviado: 1
-        }
-      }
-    ]);
-    res.status(200).json(citas);
-  } catch (error) {
-    res.status(500).json({ message: 'Error al obtener citas', error });
-  }
-};
-
-
+// Nota: getCitas ha sido removido de este archivo, debería estar en CitaC.js
 module.exports = {
   crearUsuario,
   obtenerUsuarios,

@@ -8,52 +8,56 @@ import { isPlatformBrowser } from '@angular/common';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api'; // Endpoint de autenticación
-  private apiCitasUrl = 'http://localhost:3000/api/citas'; // Endpoint de citas
+  private apiUrl = 'http://localhost:3000/api'; // Endpoint general de API
+  private apiCitasUrl = 'http://localhost:3000/api/citas'; // Endpoint específico para citas
 
-  constructor(private http: HttpClient, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   login(usuario: string, contrasena: string): Observable<any> {
-  return this.http.post(`${this.apiUrl}/login`, { usuario, contrasena }).pipe(
-    tap((response: any) => {
-      console.log('Entrando en login'); // Nuevo log para verificar ejecución
-      console.log('Respuesta del login:', response); // Depuración
-      console.log('Datos del usuario en login:', response.datosUsuario); // Log para depurar
-      if (response.token && response.datosUsuario && isPlatformBrowser(this.platformId)) {
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('rol', response.datosUsuario.rol);
-        localStorage.setItem('userId', response.datosUsuario.id);
-        console.log('Guardado en localStorage:', {
-          token: response.token,
-          rol: response.datosUsuario.rol,
-          userId: response.datosUsuario.id
-        });
-      } else {
-        console.warn('Respuesta incompleta o no en navegador:', response);
-      }
-    })
-  );
-}
+    return this.http.post(`${this.apiUrl}/login`, { usuario, contrasena }).pipe(
+      tap((response: any) => {
+        console.log('Entrando en login');
+        console.log('Respuesta del login:', response);
+        console.log('Datos del usuario en login:', response.datosUsuario);
+        if (response.token && response.datosUsuario && isPlatformBrowser(this.platformId)) {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('rol', response.datosUsuario.rol);
+          localStorage.setItem('userId', response.datosUsuario.id);
+          console.log('Guardado en localStorage:', {
+            token: response.token,
+            rol: response.datosUsuario.rol,
+            userId: response.datosUsuario.id
+          });
+        } else {
+          console.warn('Respuesta incompleta o no en navegador:', response);
+        }
+      })
+    );
+  }
 
   getToken(): string | null {
     if (isPlatformBrowser(this.platformId)) {
       return localStorage.getItem('token');
     }
-    return null; // Retorna null en el servidor
+    return null;
   }
 
   getRol(): string | null {
     if (isPlatformBrowser(this.platformId)) {
       return localStorage.getItem('rol');
     }
-    return null; // Retorna null en el servidor
+    return null;
   }
 
   getUserId(): string | null {
     if (isPlatformBrowser(this.platformId)) {
-      return localStorage.getItem('userId'); // Corrección: usa userId directamente
+      return localStorage.getItem('userId');
     }
-    return null; // Retorna null en el servidor
+    return null;
   }
 
   logout(): void {
@@ -62,8 +66,10 @@ export class AuthService {
       localStorage.removeItem('rol');
       localStorage.removeItem('userId');
     }
-    this.router.navigate(['/login']); // Ajuste a /login si es tu ruta de inicio
+    this.router.navigate(['/login']);
   }
+
+  // --- Citas ---
 
   getCitas(): Observable<any[]> {
     return this.http.get<any[]>(this.apiCitasUrl, {
@@ -71,17 +77,68 @@ export class AuthService {
     });
   }
 
+  getCitasPorPaciente(): Observable<any[]> {
+    console.log('Token enviado:', this.getToken());
+    console.log('User ID:', this.getUserId());
+    return this.http.get<any[]>(`${this.apiUrl}/pacientes/mis-citas`, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${this.getToken() || ''}` })
+    });
+  }
+
+  crearCita(cita: any): Observable<any> {
+    return this.http.post(this.apiCitasUrl, cita, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${this.getToken() || ''}` })
+    });
+  }
+
+  editarCita(id: string, cita: any): Observable<any> {
+    return this.http.put(`${this.apiCitasUrl}/${id}`, cita, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${this.getToken() || ''}` })
+    });
+  }
+
+  eliminarCita(id: string): Observable<any> {
+    return this.http.delete(`${this.apiCitasUrl}/${id}`, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${this.getToken() || ''}` })
+    });
+  }
+
+  // --- Usuarios ---
+
   getUsuarios(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/usuarios`, {
       headers: new HttpHeaders({ Authorization: `Bearer ${this.getToken() || ''}` })
     });
   }
 
-  getCitasPorPaciente(): Observable<any[]> {
-    const userId = this.getUserId();
-    console.log('Token enviado:', this.getToken()); // Log para depuración
-    console.log('User ID:', userId); // Log para depuración
-    return this.http.get<any[]>(`${this.apiUrl}/pacientes/${userId}/citas`, {
+  createUsuario(usuario: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/usuarios`, usuario, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${this.getToken() || ''}` })
+    });
+  }
+
+  updateUsuario(id: string, usuario: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/usuarios/${id}`, usuario, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${this.getToken() || ''}` })
+    });
+  }
+
+  deleteUsuario(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/usuarios/${id}`, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${this.getToken() || ''}` })
+    });
+  }
+
+  // --- Nuevos métodos para pacientes y médicos ---
+
+  getPacientes(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/pacientes`, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${this.getToken() || ''}` })
+    });
+  }
+
+  getMedicos(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/medicos`, {
       headers: new HttpHeaders({ Authorization: `Bearer ${this.getToken() || ''}` })
     });
   }

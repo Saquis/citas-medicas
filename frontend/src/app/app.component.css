@@ -1,80 +1,133 @@
+/* Estructura general */
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
 .app-container {
-    display: flex;
-    min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout {
+  display: flex;
+  flex: 1;
 }
 
 /* Sidebar */
 .sidebar {
-    width: 220px;
-    background-color: #2c3e50;
-    color: white;
-    padding: 1.5rem;
-    box-sizing: border-box;
-    flex-shrink: 0;
+  width: 250px;
+  background-color: #2c3e50;
+  color: white;
+  padding: 1rem;
+  flex-shrink: 0;
 }
 
 .sidebar h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: #2980b9;
-    font-weight: 700;
+  color: #3498db;
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
 .sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
 }
 
-.sidebar ul li {
-    margin-bottom: 1rem;
+.sidebar li a {
+  color: white;
+  text-decoration: none;
+  display: block;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.3s;
 }
 
-.sidebar ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    display: block;
-    padding: 0.5rem 0;
-    transition: color 0.3s ease;
-}
-
-.sidebar ul li a:hover,
-.sidebar ul li a:focus {
-    color: #2980b9;
-    outline: none;
-    text-decoration: underline;
-}
-
-/* Main content fills remaining space */
-.main-content {
-    flex-grow: 1;
-    padding: 2rem;
-    background-color: #f8f9fa;
-    /* fondo claro */
-    box-sizing: border-box;
-    min-height: 100vh;
+.sidebar li a:hover {
+  background-color: #34495e;
 }
 
 .logout-btn {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    background-color: #2980b9;
-    /* rojo fuerte */
-    color: white;
-    font-weight: 700;
-    border-radius: 4px;
-    text-align: center;
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.3s ease;
-    text-decoration: none;
+  color: #e74c3c !important;
+  cursor: pointer;
 }
 
-.logout-btn:hover,
-.logout-btn:focus {
-    background-color: #ffffff;
-    outline: none;
-    text-decoration: none;
+/* Contenido principal */
+.main-content {
+  flex: 1;
+  padding: 1rem;
+  background-color: #f8f9fa;
+}
+
+/* Footer */
+.footer {
+  background-color: #2c3e50;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding-top: 3rem;
+  padding-bottom: 1.5rem;
+}
+
+.footer-section {
+  margin-top: 1rem;
+}
+
+.footer-title {
+  color: #ffffff;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  text-decoration: underline;
+}
+
+.footer-link {
+  color: white;
+  text-decoration: none;
+  padding: 5px;
+  display: block;
+  margin: 0.3rem 0;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #3498db;
+  text-decoration: underline;
+}
+
+.footer-divider {
+  border-color: #555;
+  margin: 1.5rem 0;
+}
+
+.footer-copy {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.footer-brand {
+  font-weight: 700;
+  color: #3498db;
+  text-decoration: none;
+}
+
+.footer-brand:hover {
+  text-decoration: underline;
+}
+
+.footer-social {
+  margin-bottom: 0;
+  padding-left: 0;
+}
+
+.footer-social-link {
+  color: white;
+  font-size: 1.25rem;
+  margin: 0 0.3rem;
+  transition: color 0.3s ease;
+}
+
+.footer-social-link:hover {
+  color: #3498db;
 }
