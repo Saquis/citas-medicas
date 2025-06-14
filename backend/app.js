@@ -21,14 +21,14 @@ const rutasUsuarios = require("./rutas/UsuariosR");
 const rutasCitas = require("./rutas/CitasR");
 const rutasPacientes = require("./rutas/PacientesR");
 const rutasMedicos = require("./rutas/MedicosR");
-const rutasAuth = require("./rutas/AuthR"); // Nueva ruta para auth
+const rutasAuth = require("./rutas/AuthR");
 
 // Usar Rutas
-app.use("/api/login", rutasAuth);            // Ruta específica para login
-app.use("/api/usuarios", rutasUsuarios);
-app.use("/api/citas", rutasCitas);
-app.use("/api/pacientes", rutasPacientes);
-app.use("/api/medicos", rutasMedicos);
+app.use("/api/login", rutasAuth);              // Autenticación
+app.use("/api/usuarios", rutasUsuarios);       // Usuarios
+app.use("/api/citas", rutasCitas);             // Citas montadas directamente aquí
+app.use("/api/pacientes", rutasPacientes);     // Pacientes
+app.use("/api/medicos", rutasMedicos);         // Médicos
 
 // Ruta de prueba
 app.get("/", (req, res) => {
